@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Input animation demo</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .inputWrapper {
+            --pure-material-safari-helper1: rgb(var(--pure-material-primary-rgb, 33, 150, 243)); 
+            position: relative;
+            display: inline-block;
+            padding-top: 6px;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow: hidden;
+        }
+
+        .inputWrapper > input {
+            box-sizing: border-box;
+            margin: 0;
+            border: solid 1px;
+            border-color: white;
+            border-top-color: transparent;
+            border-radius: 4px;
+            padding: 15px 13px 15px;
+            width: 100%;
+            height: inherit;
+            color: white;
+            background-color: transparent;
+            box-shadow: none;
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+            caret-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .inputWrapper > input + span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            border-color: white;
+            width: 100%;
+            max-height: 100%;
+            color: white;
+            font-size: 75%;
+            line-height: 15px;
+            cursor: text;
+            transition: color 0.2s, font-size 0.2s, line-height 0.2s;
+        }
+
+
+        /* Placeholder-shown */
+        .inputWrapper > input:not(:focus):placeholder-shown,
+        .inputWrapper > textarea:not(:focus):placeholder-shown {
+            border-top-color: white;
+        }
+
+        .inputWrapper > input:not(:focus):placeholder-shown + span{
+            font-size: inherit;
+            line-height: 68px;
+        }
+
+        .inputWrapper > input + span::before,
+        .inputWrapper > input + span::after,
+        .inputWrapper > textarea + span::before,
+        .inputWrapper > textarea + span::after {
+            content: "";
+            display: block;
+            box-sizing: border-box;
+            margin-top: 6px;
+            border-top: solid 1px;
+            border-top-color: white;
+            min-width: 10px;
+            height: 8px;
+            pointer-events: none;
+            box-shadow: inset 0 1px transparent;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .inputWrapper > input + span::before {
+            margin-right: 4px;
+            border-left: solid 1px transparent;
+            border-radius: 4px 0;
+        }
+
+        .inputWrapper > input + span::after {
+            flex-grow: 1;
+            margin-left: 4px;
+            border-right: solid 1px transparent;
+            border-radius: 0 4px;
+        }
+
+        /* Focus */
+        .inputWrapper > input:focus,
+        .inputWrapper > textarea:focus {
+            border-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+            border-top-color: transparent;
+            box-shadow: inset 1px 0 var(--pure-material-safari-helper1), inset -1px 0 var(--pure-material-safari-helper1), inset 0 -1px var(--pure-material-safari-helper1);
+            outline: none;
+        }
+
+        .inputWrapper > input:focus + span,
+        .inputWrapper > textarea:focus + span {
+            color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+        }
+
+        .inputWrapper > input:focus + span::before,
+        .inputWrapper > input:focus + span::after,
+        .inputWrapper > textarea:focus + span::before,
+        .inputWrapper > textarea:focus + span::after {
+            border-top-color: var(--pure-material-safari-helper1) !important;
+            box-shadow: inset 0 1px var(--pure-material-safari-helper1);
+        }
+
+        /* Wrong method demo */
+        .inputGroup {
+            position: relative;
+        }
+
+        .inputGroup input {
+            font: inherit; 
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            outline: 2px solid white;
+            background-color: transparent; 
+            transition: outline-color .2s;
+        }
+
+        .inputGroup span {
+            position: absolute;
+            top: 0; left: 0;
+            translate: 10px 10px;
+            color: white; 
+            transition: translate .2s, scale .2s;
+        }
+
+        .inputGroup input:is(:focus, :valid) {
+            outline-color: rgb(33, 150, 243);
+        }
+
+        .inputGroup input:is(:focus, :valid) + span {
+            color: rgb(33, 150, 243);
+            padding-inline: 5px; 
+            translate: 10px -14px;
+            scale: 0.8;
+            background-color: white;
+        }
+
+
+        .gradient {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(270deg, #be4949, #f69379);
+            background-size: 400% 400%;
+
+            -webkit-animation: gradientAnim 3s ease infinite;
+            animation: gradientAnim 3s ease infinite;
+        }
+
+        @-webkit-keyframes gradientAnim {
+            0%{background-position:0% 45%}
+            50%{background-position:100% 56%}
+            100%{background-position:0% 45%}
+        }
+        @keyframes gradientAnim {
+            0%{background-position:0% 45%}
+            50%{background-position:100% 56%}
+            100%{background-position:0% 45%}
+        }
+
+    </style>
+</head>
+
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+    
+      function App() {
+        return (
+            <>
+                <div class="flex flex-col items-center justify-center min-h-screen w-full gap-6 text-white bg-neutral-950">
+                    <div class="flex flex-col items-start justify-start w-full max-w-xl gap-6">
+
+                        <h1 class="text-xl font-bold text-white">Why proper technique matters</h1>
+
+                        <div class="w-fit flex flex-col gap-6">
+                            <div class="flex flex-row items-center justify-end w-full gap-4">
+                                <span class="font-light">Proper technique</span>
+                                <label class="inputWrapper ">
+                                    <input placeholder=" " />
+                                    <span>Label</span>    
+                                </label>
+                            </div>
+
+                            <div class="flex flex-row items-center justify-end w-full gap-4">
+                                <span class="font-light">Cheating</span>
+
+                                <label class="inputGroup">
+                                    <input placeholder=" " required type="text" /> 
+                                    <span>Label</span>                       
+                                </label>
+
+                            </div>
+                        </div>
+                    </div>
+ 
+                </div>
+            </>
+        )
+      }
+
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<App />);
+
+    </script>
+  </body>
+</html>
